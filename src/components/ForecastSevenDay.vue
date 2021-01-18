@@ -1,54 +1,44 @@
 <template>
   <div>
-    <v-data-table
-      disable-pagination
-      :headers="tableHeaders"
-      :items="tableItems"
-      :hide-default-footer="true"
-      :loading="loading"
-    ></v-data-table>
+    <v-data-table disable-pagination :headers="tableHeaders" :items="tableItems" :hide-default-footer="true" :loading="loading"></v-data-table>
   </div>
 </template>
 <script>
-import { getSevenDayForecast } from "../services/noaa-weather";
-import { mapState, mapActions } from "vuex";
+import { getSevenDayForecast } from '../services/noaa-weather';
+import { mapState, mapActions } from 'vuex';
 export default {
-  name: "ForecastSevenDay",
+  name: 'ForecastSevenDay',
   computed: {
-    ...mapState(["currentAddress"]),
+    ...mapState(['currentAddress']),
   },
   data() {
     return {
       loading: false,
       tableHeaders: [
         {
-          text: "Date",
-          align: "start",
+          text: 'Date',
+          align: 'start',
           sortable: true,
-          value: "date",
+          value: 'date',
         },
         {
-          text: "Overview",
-          value: "overview",
+          text: 'Overview',
+          value: 'overview',
         },
-        { text: "Temperature", value: "temperature" },
-        { text: "Temperature Unit", value: "temperatureUnit" },
+        { text: 'Temperature', value: 'temperature' },
+        { text: 'Temperature Unit', value: 'temperatureUnit' },
       ],
       tableItems: [],
     };
   },
   methods: {
-    ...mapActions["showError"],
+    ...mapActions(['showError']),
   },
   watch: {
     currentAddress: {
       handler: function(newAddress) {
         this.loading = true;
-        getSevenDayForecast(
-          newAddress.gridId,
-          newAddress.gridX,
-          newAddress.gridY
-        )
+        getSevenDayForecast(newAddress.gridId, newAddress.gridX, newAddress.gridY)
           .then((res) => {
             this.loading = false;
             // form table rows with response.
@@ -57,7 +47,7 @@ export default {
               let time = date.getHours();
               let month = date.getMonth() + 1;
               let day = date.getDate();
-              let amOrPm = time >= 12 ? "PM" : "AM";
+              let amOrPm = time >= 12 ? 'PM' : 'AM';
               time = time == 0 || time == 24 ? 12 : time % 12;
               return {
                 date: `${month}/${day} ${time}${amOrPm}`,
@@ -68,7 +58,7 @@ export default {
             });
           })
           .catch(() => {
-            this.showError("Error fetching Seven Day Forecast");
+            this.showError('Error fetching Seven Day Forecast');
           });
       },
       immediate: true,
